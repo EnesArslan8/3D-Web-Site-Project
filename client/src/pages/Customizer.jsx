@@ -17,7 +17,31 @@ import {
 
 const Customizer = () => {
   const snap = useSnapshot(state);
+  
 
+  const [file,setFile]=useState('');
+  const [aipromp,setAIpromt]=useState('');
+  const [generatingImg,setGeneratingImg]=useState(false);
+
+  const [activeEditorTab,setActiveEditorTab]=useState("");
+  const [activeFilterTab,setActiveFilterTab]=useState({
+    logoShirt:true,
+    stylishShirt:false,
+  });
+
+  //show tab content depending on the activeTab
+  const generateTabContent=()=>{
+    switch(activeEditorTab){
+      case "colorpicker":
+        return <ColorPicker/>
+      case "filepicker":
+        return <FilePicker/>
+      case "aipicker":
+        return <AIPicker/>
+      default:
+        return null
+    }
+  }
   return (
     <AnimatePresence>
       {!snap.intro && (
@@ -32,8 +56,9 @@ const Customizer = () => {
                 className="glassmorphism w-16 border-[2px] rounded-lg flex flex-col justify-center items-center ml-1 py-4 gap-4 tabs"
               >
                 {EditorTabs.map((tab) => (
-                  <Tab key={tab.name} tab={tab} handleClick={() => {}} />
+                  <Tab key={tab.name} tab={tab} handleClick={() => {setActiveEditorTab(tab.name)}} />
                 ))}
+                {generateTabContent()}
               </div>
             </div>
           </motion.div>
