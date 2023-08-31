@@ -37,8 +37,8 @@ const Customizer = () => {
         return <FilePicker file={file} setFile={setFile} readFile={readFile}/>;
       case "aipicker":
         return <AIPicker 
-          aipromp={aipromp}
-          setAIpromt={setAIpromt}
+          prompt={aipromp}
+          setPrompt={setAIpromt}
           generatingImg={generatingImg}
           handleSubmit={handleSubmit}
         />;
@@ -52,7 +52,7 @@ const Customizer = () => {
 
     try{
       //call our backend to generate an ai image!
-      
+
     }catch(err){
       alert(err)
     }finally{
