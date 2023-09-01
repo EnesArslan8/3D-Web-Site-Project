@@ -34,34 +34,46 @@ const Customizer = () => {
       case "colorpicker":
         return <ColorPicker />;
       case "filepicker":
-        return <FilePicker file={file} setFile={setFile} readFile={readFile}/>;
+        return <FilePicker file={file} setFile={setFile} readFile={readFile} />;
       case "aipicker":
-        return <AIPicker 
-          prompt={aipromp}
-          setPrompt={setAIpromt}
-          generatingImg={generatingImg}
-          handleSubmit={handleSubmit}
-        />;
+        return (
+          <AIPicker
+            prompt={aipromp}
+            setPrompt={setAIpromt}
+            generatingImg={generatingImg}
+            handleSubmit={handleSubmit}
+          />
+        );
       default:
         return null;
     }
   };
 
-  const handleSubmit=async(type)=>{
-    if(!aipromp) return alert("Please enter a prompt")
+  const handleSubmit = async (type) => {
+    if (!aipromp) return alert("Please enter a prompt");
 
-    try{
+    try {
       //call our backend to generate an ai image!
+      setGeneratingImg(true);
+      const response = await fetch("http://localhost:8080/api/v1/dalle", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          prompt,
+        }),
+      });
 
-    }catch(err){
-      alert(err)
-    }finally{
-      setGeneratingImg(false)
-      setActiveFilterTab("")
+      const data = await response.json();
+      handleDecals(type, `data:image/png;base64,${data.photo}`);
+    } catch (err) {
+      alert(err);
+    } finally {
+      setGeneratingImg(false);
+      setActiveFilterTab("");
     }
-
-  }
-
+  };
 
   const handleDecals = (type, result) => {
     const decalType = DecalTypes[type];
@@ -84,16 +96,16 @@ const Customizer = () => {
       default:
         state.isFullTexture = true;
         state.isLogoTexture = false;
+        break;
     }
-    
+
     //after setting the state,activeFilterTab is updated
-    setActiveFilterTab((prevState)=>{
+    setActiveFilterTab((prevState) => {
       return {
         ...prevState,
-        [tabName]:!prevState[tabName]
-      }
-    })
-
+        [tabName]: !prevState[tabName],
+      };
+    });
   };
 
   const readFile = (type) => {
